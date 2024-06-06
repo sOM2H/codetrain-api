@@ -25,9 +25,12 @@ gem "puma", ">= 5.0"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 
+gem 'dotenv-rails', groups: [:development, :test]
 gem 'rack-cors'
 gem 'devise'
 gem 'devise_token_auth'
+gem 'omniauth'
+gem 'omniauth-google-oauth2'
 
 gem "tzinfo-data", platforms: %i[ mswin mswin64 mingw x64_mingw jruby ]
 
