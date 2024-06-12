@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  code: MyText
+  user: one
+  problem: one
+  language: one
+  result: 1
+
+two:
+  code: MyText
+  user: two
+  problem: two
+  language: two
+  result: 1

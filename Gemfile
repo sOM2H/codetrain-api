@@ -32,6 +32,9 @@ gem 'devise_token_auth'
 
 gem 'active_model_serializers'
 
+gem 'sidekiq'
+gem 'docker-api'
+
 gem "tzinfo-data", platforms: %i[ mswin mswin64 mingw x64_mingw jruby ]
 
 # Reduces boot times through caching; required in config/boot.rb

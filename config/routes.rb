@@ -9,9 +9,16 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :problems do
-        resources :tests, only: [:index, :show, :create, :update, :destroy]
+        get :attempts, on: :member
+        resources :tests do
+          collection do
+            get 'first_two', to: 'tests#first_two'
+          end
+        end
       end
-      resources :tags, only: [:index, :show, :create, :update, :destroy]
+      resources :tags
+      resources :languages
+      resources :attempts
     end
   end
 end
