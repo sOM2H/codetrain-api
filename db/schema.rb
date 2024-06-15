@@ -16,6 +16,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_12_074425) do
 
   create_table "attempts", force: :cascade do |t|
     t.text "code"
+    t.string "log"
     t.bigint "user_id", null: false
     t.bigint "problem_id", null: false
     t.bigint "language_id", null: false

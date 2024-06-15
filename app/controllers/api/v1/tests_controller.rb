@@ -37,7 +37,7 @@ class Api::V1::TestsController < ApplicationController
   def first_two
     problem = Problem.find(params[:problem_id])
     first_two_tests = problem.tests.limit(2)
-    render json: first_two_tests
+    render json: first_two_tests, each_serializer: TestSerializer
   end
 
   private

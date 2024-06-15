@@ -14,7 +14,9 @@ class Api::V1::ProblemsController < ApplicationController
       problems = problems.joins(:tags).where(tags: { id: tag_ids }).distinct
     end
 
-    render json: problems
+    problems = problems.page(params[:page]).per(20)
+
+    render json: problems, each_serializer: ProblemSerializer, meta: pagination_dict(problems)
   end
 
   def show
@@ -55,6 +57,16 @@ class Api::V1::ProblemsController < ApplicationController
   end
 
   def problem_params
-    params.require(:problem).permit(:name, :description, :average_rating, tag_ids: [])
+    params.require(:problem).permit(:name, :description, tag_ids: [])
+  end
+
+  def pagination_dict(collection)
+    {
+      current_page: collection.current_page,
+      next_page: collection.next_page || -1,
+      prev_page: collection.prev_page || -1,
+      total_pages: collection.total_pages,
+      total_count: collection.total_count
+    }
   end
 end

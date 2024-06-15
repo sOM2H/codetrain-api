@@ -32,8 +32,11 @@ gem 'devise_token_auth'
 
 gem 'active_model_serializers'
 
+gem 'redis'
 gem 'sidekiq'
 gem 'docker-api'
+
+gem 'kaminari'
 
 gem "tzinfo-data", platforms: %i[ mswin mswin64 mingw x64_mingw jruby ]
 
