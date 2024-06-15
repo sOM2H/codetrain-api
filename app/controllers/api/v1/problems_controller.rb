@@ -47,7 +47,7 @@ class Api::V1::ProblemsController < ApplicationController
 
   def attempts
     attempts = @problem.attempts.order(id: :desc)
-    render json: attempts, include: :language
+    render json: attempts, include: :language, each_serializer: AttemptSerializer
   end
 
   private

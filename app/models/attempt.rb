@@ -18,7 +18,7 @@ class Attempt < ApplicationRecord
       log: self.log,
       code: self.code,
       language: self.language,
-      result: self.result
+      result: self.result.humanize
     })
   end
 end
