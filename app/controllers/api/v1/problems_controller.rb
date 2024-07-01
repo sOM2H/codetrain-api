@@ -46,8 +46,11 @@ class Api::V1::ProblemsController < ApplicationController
   end
 
   def attempts
-    attempts = @problem.attempts.order(id: :desc)
-    render json: attempts, include: :language, each_serializer: AttemptSerializer
+    attempts = @problem.attempts.where(user: current_user).order(id: :desc)
+
+    attempts = attempts.page(params[:page]).per(20)
+
+    render json: attempts, include: :language, each_serializer: AttemptSerializer, meta: pagination_dict(attempts)
   end
 
   private
