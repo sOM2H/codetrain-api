@@ -1,4 +1,6 @@
 class PhpCompiler < Compiler
+  EXTRA_MEMORY = 17
+
   private
 
   def source_setup(container, code)
@@ -7,6 +9,6 @@ class PhpCompiler < Compiler
   end
 
   def run(container)
-    TestRunner.call(container, 'php main.php')
+    TestRunner.call(container, 'php main.php', extra_memory: EXTRA_MEMORY)
   end
 end

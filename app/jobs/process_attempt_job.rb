@@ -1,4 +1,4 @@
-class Compilejob < ApplicationJob
+class ProcessAttemptJob < ApplicationJob
   queue_as :default
 
   def perform(attempt_id)
@@ -16,10 +16,14 @@ class Compilejob < ApplicationJob
       runtime_error(e.index)
     rescue Compiler::WrongAnswer => e
       wrong_answer(e.index)
+    rescue Compiler::TimeLimitError => e
+      time_limit_error(e.index)
+    rescue Compiler::MemoryLimitError => e
+      memory_limit_error(e.index)
     rescue Docker::Error::TimeoutError
-      time_limit_error
+      time_limit_error(nil) # Docker Timeout is also treated as a time limit error
     ensure
-      container&.delete(force: true)
+      #container&.delete(force: true)
       @attempt.broadcast_attempt
     end
   end
@@ -34,8 +38,12 @@ class Compilejob < ApplicationJob
     @attempt.runtime_error!
   end
 
-  def time_limit_error
+  def time_limit_error(index)
     @attempt.time_limit!
+  end
+
+  def memory_limit_error(index)
+    @attempt.memory_limit!
   end
 
   def compilation_error

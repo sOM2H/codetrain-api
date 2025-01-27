@@ -1,4 +1,6 @@
 class CppCompiler < Compiler
+  EXTRA_MEMORY = 4
+
   private
 
   def source_setup(container, code)
@@ -10,6 +12,6 @@ class CppCompiler < Compiler
   end
 
   def run(container)
-    TestRunner.call(container, './application')
+    TestRunner.call(container, './application', extra_memory: EXTRA_MEMORY)
   end
 end

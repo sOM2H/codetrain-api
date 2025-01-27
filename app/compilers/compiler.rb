@@ -1,4 +1,6 @@
 class Compiler
+  EXTRA_MEMORY = 0
+
   class CompilerError < StandardError
     attr_reader :index
     def initialize(index)
@@ -8,6 +10,8 @@ class Compiler
   class CompilationError < StandardError; end
   class RunTimeError < CompilerError; end
   class WrongAnswer < CompilerError; end
+  class TimeLimitError < CompilerError; end
+  class MemoryLimitError < CompilerError; end
 
   def initialize(container, attempt)
     @container = container
@@ -22,7 +26,13 @@ class Compiler
       @attempt.broadcast_attempt
 
       TestSeter.call(@container, test)
-      raise RunTimeError, index unless run @container
+      begin
+        raise RunTimeError, index unless run @container
+      rescue Compiler::TimeLimitError
+        raise TimeLimitError, index
+      rescue Compiler::MemoryLimitError
+        raise MemoryLimitError, index
+      end
       raise WrongAnswer, index unless TestChecker.call(@container, test)
     end
     @attempt

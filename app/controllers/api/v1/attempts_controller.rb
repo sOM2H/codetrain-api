@@ -15,7 +15,7 @@ class Api::V1::AttemptsController < ApplicationController
     @attempt = Attempt.new(attempt_params)
     @attempt.user = current_user
     if @attempt.save
-      Compilejob.perform_later(@attempt.id) unless Rails.env.test?
+      ProcessAttemptJob.perform_later(@attempt.id) unless Rails.env.test?
       render json: @attempt, status: :created
     else
       render json: @attempt.errors, status: :unprocessable_entity

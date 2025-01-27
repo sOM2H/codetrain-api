@@ -10,5 +10,6 @@ RUN apt update \
   default-jdk \
   ruby \
   g++ \
+  time \
   bash -y
 CMD ["bash"]

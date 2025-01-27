@@ -1,4 +1,6 @@
 class RubyCompiler < Compiler
+  EXTRA_MEMORY = 9
+
   private
 
   def source_setup(container, code)
@@ -7,6 +9,6 @@ class RubyCompiler < Compiler
   end
 
   def run(container)
-    TestRunner.call(container, 'ruby main.rb')
+    TestRunner.call(container, 'ruby main.rb', extra_memory: EXTRA_MEMORY)
   end
 end
