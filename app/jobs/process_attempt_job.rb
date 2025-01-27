@@ -9,6 +9,7 @@ class ProcessAttemptJob < ApplicationJob
 
     begin
       (eval @attempt.language.compiler.to_s).new(container, @attempt).call
+      @attempt.update(score: 100.00)
       @attempt.passed!
     rescue Compiler::CompilationError
       compilation_error
@@ -23,7 +24,7 @@ class ProcessAttemptJob < ApplicationJob
     rescue Docker::Error::TimeoutError
       time_limit_error(nil) # Docker Timeout is also treated as a time limit error
     ensure
-      #container&.delete(force: true)
+      container&.delete(force: true)
       @attempt.broadcast_attempt
     end
   end
@@ -31,22 +32,32 @@ class ProcessAttemptJob < ApplicationJob
   private
 
   def wrong_answer(index)
+    update_score(index)
     @attempt.wrong_answer!
   end
 
   def runtime_error(index)
+    update_score(index)
     @attempt.runtime_error!
   end
 
   def time_limit_error(index)
+    update_score(index)
     @attempt.time_limit!
   end
 
   def memory_limit_error(index)
+    update_score(index)
     @attempt.memory_limit!
   end
 
   def compilation_error
     @attempt.compilation_error!
+  end
+  
+  def update_score(index)
+    total_tests = @attempt.problem.tests.count
+    score = ((index).to_f / total_tests * 100).round(2)
+    @attempt.update(score: score)
   end
 end

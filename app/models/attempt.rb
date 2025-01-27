@@ -18,7 +18,13 @@ class Attempt < ApplicationRecord
       log: self.log,
       code: self.code,
       language: self.language,
-      result: self.result.humanize
+      result: self.result.humanize,
+      rounded_score: self.rounded_score
     })
+  end
+
+  def rounded_score
+    rounded = score.round(2)
+    rounded == rounded.to_i ? rounded.to_i : rounded
   end
 end

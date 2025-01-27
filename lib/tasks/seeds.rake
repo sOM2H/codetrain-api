@@ -7,7 +7,7 @@ task :seeds => [:environment] do
   # Languages
   languages = [
     {
-      name: "Ruby",
+      name: "Ruby 2.5.1",
       css_name: "ruby",
       compiler: "RubyCompiler",
       placeholder: <<~CODE
@@ -17,7 +17,7 @@ task :seeds => [:environment] do
       CODE
     },
     {
-      name: "Python",
+      name: "Python 3.6",
       css_name: "python",
       compiler: "PythonCompiler",
       placeholder: <<~CODE
@@ -27,7 +27,7 @@ task :seeds => [:environment] do
       CODE
     },
     {
-      name: "PHP",
+      name: "PHP 7.2.24",
       css_name: "php",
       compiler: "PhpCompiler",
       placeholder: <<~CODE
@@ -41,7 +41,7 @@ task :seeds => [:environment] do
       CODE
     },
     {
-      name: "Node.js",
+      name: "Node 8.10.0",
       css_name: "js",
       compiler: "JsCompiler",
       placeholder: <<~CODE
@@ -52,7 +52,7 @@ task :seeds => [:environment] do
       CODE
     },
     {
-      name: "Java",
+      name: "Java 11.0.19",
       css_name: "java",
       compiler: "JavaCompiler",
       placeholder: <<~CODE
@@ -73,7 +73,7 @@ task :seeds => [:environment] do
       CODE
     },
     {
-      name: "Go",
+      name: "Go 1.10.4",
       css_name: "go",
       compiler: "GoCompiler",
       placeholder: <<~CODE
@@ -89,7 +89,7 @@ task :seeds => [:environment] do
       CODE
     },
     {
-      name: "C++",
+      name: "C++ 14",
       css_name: "cpp",
       compiler: "CppCompiler",
       placeholder: <<~CODE

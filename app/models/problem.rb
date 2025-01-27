@@ -5,4 +5,12 @@ class Problem < ApplicationRecord
   has_many :attempts, dependent: :destroy
 
   validates :description, presence: true
+
+  def max_score
+    max_score = attempts.maximum(:score)
+    return nil if max_score.nil?
+  
+    rounded_score = max_score.round(2)
+    rounded_score == rounded_score.to_i ? rounded_score.to_i : rounded_score
+  end
 end
