@@ -22,6 +22,7 @@ class Compiler
     raise CompilationError unless source_setup @container, @attempt.code
 
     tests.each_with_index do |test, index|
+      update_score(index)
       @attempt.update!(log: (index + 1).to_s)
       @attempt.broadcast_attempt
 
@@ -39,6 +40,12 @@ class Compiler
   end
 
   private
+
+  def update_score(index)
+    total_tests = tests.count
+    score = ((index).to_f / total_tests * 100).round(2)
+    @attempt.update(score: score)
+  end
 
   def tests
     Test.where(problem_id: @attempt.problem_id)
