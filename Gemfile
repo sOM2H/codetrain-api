@@ -28,7 +28,7 @@ gem "puma", ">= 5.0"
 gem 'dotenv-rails', groups: [:development, :test]
 gem 'rack-cors'
 gem 'devise'
-gem 'devise_token_auth'
+gem 'devise-jwt'
 
 gem 'active_model_serializers'
 
@@ -37,6 +37,9 @@ gem 'sidekiq'
 gem 'docker-api'
 
 gem 'kaminari'
+
+gem 'rolify'
+gem 'cancancan'
 
 gem "tzinfo-data", platforms: %i[ mswin mswin64 mingw x64_mingw jruby ]
 
@@ -50,6 +53,7 @@ gem "bootsnap", require: false
 # gem "rack-cors"
 
 group :development, :test do
+  gem 'pry'
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri mswin mswin64 mingw x64_mingw ]
 end

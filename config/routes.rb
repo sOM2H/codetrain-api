@@ -1,8 +1,10 @@
 Rails.application.routes.draw do
-  mount_devise_token_auth_for 'User', at: 'auth', controllers: {
-    sessions: 'devise_token_auth/custom_sessions',
-    registrations: 'devise_token_auth/custom_registrations'
+  devise_for :users, controllers: {
+    sessions: 'users/sessions',
+    registrations: 'users/registrations'
   }
+
+  post 'users/refresh_token', to: 'users/refresh_tokens#create'
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
