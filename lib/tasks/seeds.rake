@@ -1,7 +1,7 @@
 task :seeds => [:environment] do
-  User.find_or_create_by!(email: 'admin@admin.com') do |user|
-    user.name = 'admin'
-    user.password = '123123123'
+  User.find_or_create_by!(login: 'admin') do |user|
+    user.full_name = 'Mykhailo Melnyk'
+    user.password = '123123123' 
   end
 
   # Languages

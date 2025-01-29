@@ -24,7 +24,7 @@ class Api::V1::ProblemsController < ApplicationController
   end
 
   def show
-    render json: @problem, serializer: ProblemSerializer
+    render json: @problem, serializer: ProblemSerializer, scope: current_user
   end
 
   def create

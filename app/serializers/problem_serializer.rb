@@ -4,6 +4,6 @@ class ProblemSerializer < ActiveModel::Serializer
   has_many :tags, through: :problem_tags
 
   def max_score
-    object.max_score
+    object.max_score(scope)
   end
 end

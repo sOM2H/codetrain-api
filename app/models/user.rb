@@ -1,11 +1,18 @@
-# frozen_string_literal: true
-
 class User < ActiveRecord::Base
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
   include DeviseTokenAuth::Concerns::User
 
   has_many :attempts, dependent: :destroy
+
+  validates :login, presence: true, uniqueness: { case_sensitive: false }
+  validates :full_name, presence: true
+
+  before_validation :set_uid
+
+  private
+
+  def set_uid
+    self.uid = login if uid.blank?
+  end
 end

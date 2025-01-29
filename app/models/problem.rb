@@ -6,8 +6,8 @@ class Problem < ApplicationRecord
 
   validates :description, presence: true
 
-  def max_score
-    max_score = attempts.maximum(:score)
+  def max_score(user)
+    max_score = attempts.where(user_id: user.id).maximum(:score)
     return nil if max_score.nil?
   
     rounded_score = max_score.round(2)
