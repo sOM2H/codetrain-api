@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_01_29_185333) do
+ActiveRecord::Schema[7.1].define(version: 2025_01_30_012758) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -24,9 +24,40 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_29_185333) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.float "score", default: 0.0, null: false
+    t.bigint "contest_id"
+    t.index ["contest_id"], name: "index_attempts_on_contest_id"
     t.index ["language_id"], name: "index_attempts_on_language_id"
     t.index ["problem_id"], name: "index_attempts_on_problem_id"
     t.index ["user_id"], name: "index_attempts_on_user_id"
+  end
+
+  create_table "contests", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.datetime "start_time"
+    t.datetime "end_time"
+    t.bigint "organization_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id"], name: "index_contests_on_organization_id"
+  end
+
+  create_table "contests_problems", force: :cascade do |t|
+    t.bigint "contest_id", null: false
+    t.bigint "problem_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["contest_id"], name: "index_contests_problems_on_contest_id"
+    t.index ["problem_id"], name: "index_contests_problems_on_problem_id"
+  end
+
+  create_table "contests_users", force: :cascade do |t|
+    t.bigint "contest_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["contest_id"], name: "index_contests_users_on_contest_id"
+    t.index ["user_id"], name: "index_contests_users_on_user_id"
   end
 
   create_table "languages", force: :cascade do |t|
@@ -121,9 +152,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_29_185333) do
     t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
 
+  add_foreign_key "attempts", "contests"
   add_foreign_key "attempts", "languages"
   add_foreign_key "attempts", "problems"
   add_foreign_key "attempts", "users"
+  add_foreign_key "contests", "organizations"
+  add_foreign_key "contests_problems", "contests"
+  add_foreign_key "contests_problems", "problems"
+  add_foreign_key "contests_users", "contests"
+  add_foreign_key "contests_users", "users"
   add_foreign_key "problem_tags", "problems"
   add_foreign_key "problem_tags", "tags"
   add_foreign_key "tests", "problems"

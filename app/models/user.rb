@@ -7,6 +7,8 @@ class User < ActiveRecord::Base
          jwt_revocation_strategy: Devise::JWT::RevocationStrategies::Null
   
   has_many :attempts, dependent: :destroy
+  has_many :contests_users, dependent: :destroy
+  has_many :contests, through: :contests_users
   belongs_to :organization
 
   validates :login, presence: true, uniqueness: { case_sensitive: false }
@@ -15,7 +17,7 @@ class User < ActiveRecord::Base
   before_validation :set_uid
 
   def jwt_payload
-    UserSerializer.new(self).as_json
+    { user: UserSerializer.new(self).as_json }
   end
 
   private

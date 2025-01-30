@@ -1,8 +1,42 @@
 task :seeds => [:environment] do
-  User.find_or_create_by!(login: 'admin') do |user|
-    user.full_name = 'Mykhailo Melnyk'
-    user.password = '123123123' 
+  code_train = Organization.find_or_create_by!(name: 'CodeTrain') 
+  organization = Organization.find_or_create_by!(name: 'Test organization')
+  contest = Contest.find_or_create_by!(title: "Winter Coding Contest") do |c|
+    c.organization_id = organization.id
+    c.description = 'Winter Coding Contest'
   end
+ 
+  admin = User.find_or_create_by!(login: 'admin') do |user|
+    user.organization_id = code_train.id
+    user.full_name = 'ADMIN'
+    user.password = '123123123'
+  end
+  admin.add_role :admin
+
+  teacher = User.find_or_create_by!(login: 'teacher') do |user|
+    user.organization_id = organization.id
+    user.full_name = 'TEACHER'
+    user.password = '123123123'
+  end
+  teacher.add_role :teacher
+
+  student = User.find_or_create_by!(login: 'student') do |user|
+    user.organization_id = organization.id
+    user.full_name = 'Stutend Abu'
+    user.password = '123123123'
+  end
+  student.add_role :student
+
+  student2 = User.find_or_create_by!(login: 'student2') do |user|
+    user.organization_id = organization.id
+    user.full_name = 'Stutend Dabi'
+    user.password = '123123123'
+  end
+  student2.add_role :student
+  
+  contest.users << student
+  contest.users << student2
+
 
   # Languages
   languages = [
@@ -128,6 +162,7 @@ task :seeds => [:environment] do
     prob.description = "Write a program that takes two integers A and B as input and calculates their sum."
     prob.complexity = 0
   end
+  contest.problems << problem
 
   # Link Problem to Tag
   tag = Tag.find_by(name: 'For Beginners')
@@ -152,6 +187,7 @@ task :seeds => [:environment] do
     prob.description = "Create a program that asks the user for their name and outputs a personalized welcome message. If the input is empty, prompt the user again until they provide a valid name."
     prob.complexity = 0
   end
+  contest.problems << problem
 
   # Link Problem to Tag
   tag = Tag.find_by(name: 'For Beginners')
@@ -176,6 +212,7 @@ task :seeds => [:environment] do
     prob.description = "Implement the Sort algorithm to sort an array of numbers in ascending order."
     prob.complexity = 0
   end
+  contest.problems << problem
 
   # Link Problem to Tag
   tag = Tag.find_by(name: 'Algorithms')

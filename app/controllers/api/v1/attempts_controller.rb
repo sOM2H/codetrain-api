@@ -3,7 +3,7 @@ class Api::V1::AttemptsController < ApplicationController
   before_action :set_attempt, only: [:show, :update, :destroy]
 
   def index
-    @attempts = Attempt.all
+    @attempts = Attempt.where(contest_id: nil)
     render json: @attempts
   end
 
@@ -38,10 +38,10 @@ class Api::V1::AttemptsController < ApplicationController
   private
 
   def set_attempt
-    @attempt = Attempt.find(params[:id])
+    @attempt = Attempt.where(id: params[:id], contest: params[:contest_id]).first
   end
 
   def attempt_params
-    params.require(:attempt).permit(:code, :problem_id, :language_id)
+    params.require(:attempt).permit(:code, :problem_id, :language_id, :contest_id)
   end
 end

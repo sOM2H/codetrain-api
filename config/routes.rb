@@ -24,6 +24,18 @@ Rails.application.routes.draw do
           end
         end
       end
+      resources :contests, only: [:index, :show] do
+        member do
+          get :problems
+        end
+      end
+      resources :organizations do
+        member do
+          get :teachers
+          get :students
+          get :contests
+        end
+      end
       resources :tags
       resources :languages
       resources :attempts

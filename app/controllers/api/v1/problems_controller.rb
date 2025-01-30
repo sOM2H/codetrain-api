@@ -20,11 +20,11 @@ class Api::V1::ProblemsController < ApplicationController
 
     problems = problems.page(params[:page]).per(20)
 
-    render json: problems, each_serializer: ProblemSerializer, meta: pagination_dict(problems)
+    render json: problems, each_serializer: ProblemSerializer, meta: pagination_dict(problems), current_user: current_user
   end
 
   def show
-    render json: @problem, serializer: ProblemSerializer, scope: current_user
+    render json: @problem, serializer: ProblemSerializer, current_user: current_user
   end
 
   def create
@@ -52,8 +52,8 @@ class Api::V1::ProblemsController < ApplicationController
     end
   end
 
-  def attempts
-    attempts = @problem.attempts.where(user: current_user).order(id: :desc)
+  def attempts 
+    attempts = @problem.attempts.where(user: current_user, contest_id: params[:contest_id]).order(id: :desc)
 
     if attempts.any?
       attempts = attempts.page(params[:page]).per(20)

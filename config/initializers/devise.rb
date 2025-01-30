@@ -48,8 +48,12 @@ Devise.setup do |config|
   # or not authentication should be aborted when the value is not present.
   config.authentication_keys = [:login]
 
+  config.navigational_formats = [:html]
+
   config.jwt do |jwt|
     jwt.secret = Rails.application.credentials.secret_key_base
+    jwt.dispatch_requests = [['POST', %r{^/users/sign_in$}]]
+    jwt.revocation_requests = [['DELETE', %r{^/users/sign_out$}]]
   end
 
   # Configure parameters from the request object used for authentication. Each entry

@@ -2,6 +2,7 @@ class Attempt < ApplicationRecord
   belongs_to :user
   belongs_to :problem
   belongs_to :language
+  belongs_to :contest, optional: true
 
   enum result: %i[pending running passed wrong_answer
                   time_limit presentation_error

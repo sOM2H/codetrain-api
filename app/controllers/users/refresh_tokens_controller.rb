@@ -14,7 +14,10 @@ class Users::RefreshTokensController < ApplicationController
   private
 
   def authenticate_refresh_token
-    @user = User.find_by(refresh_token: params[:refresh_token])
+    refresh_token = cookies.signed[:refresh_token]
+    hashed_token = Digest::SHA256.hexdigest(refresh_token) if refresh_token
+
+    @user = User.find_by(refresh_token: hashed_token)
     render json: { error: 'Invalid refresh token' }, status: :unauthorized unless @user
   end
 end

@@ -1,4 +1,6 @@
 class Users::SessionsController < Devise::SessionsController
+  before_action :authenticate_user!, only: [:me]
+
   respond_to :json
 
   def create
@@ -9,6 +11,10 @@ class Users::SessionsController < Devise::SessionsController
     else
       render json: { error: "Invalid login or password" }, status: :unauthorized
     end
+  end
+
+  def me
+    render json: @current_user, status: :ok
   end
 
   private
