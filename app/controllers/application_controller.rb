@@ -3,9 +3,19 @@ class ApplicationController < ActionController::API
 
   def authenticate_user!
     token = request.headers['Authorization']&.split(' ')&.last
-    if token && JWT.decode(token, Rails.application.credentials.secret_key_base).first
-    else
-      render json: { error: 'Unauthorized' }, status: :unauthorized
+    if token.nil?
+      return render json: { error: 'Unauthorized' }, status: :unauthorized
+    end
+
+    begin
+      payload = JWT.decode(token, Rails.application.credentials.secret_key_base).first
+      exp = payload['exp']
+
+      if exp < Time.now.to_i
+        return render json: { error: 'Token expired' }, status: :unauthorized
+      end
+    rescue JWT::DecodeError
+      return render json: { error: 'Unauthorized' }, status: :unauthorized
     end
   end
 
