@@ -33,10 +33,33 @@ task :seeds => [:environment] do
     user.password = '123123123'
   end
   student2.add_role :student
-  
+ 
+  student3 = User.find_or_create_by!(login: 'student3') do |user|
+    user.organization_id = organization.id
+    user.full_name = 'Stutend lala'
+    user.password = '123123123'
+  end
+  student3.add_role :student
+
+  student4 = User.find_or_create_by!(login: 'student4') do |user|
+    user.organization_id = organization.id
+    user.full_name = 'Stutend bobo'
+    user.password = '123123123'
+  end
+  student4.add_role :student
+
+  student5 = User.find_or_create_by!(login: 'student5') do |user|
+    user.organization_id = organization.id
+    user.full_name = 'Stutend dudu'
+    user.password = '123123123'
+  end
+  student5.add_role :student
+
   contest.users << student
   contest.users << student2
-
+  contest.users << student3
+  contest.users << student4
+  contest.users << student5
 
   # Languages
   languages = [
@@ -160,7 +183,7 @@ task :seeds => [:environment] do
   # =========
   problem = Problem.find_or_create_by!(title: "A + B") do |prob|
     prob.description = "Write a program that takes two integers A and B as input and calculates their sum."
-    prob.complexity = 0
+    prob.complexity = 1
   end
   contest.problems << problem
 
@@ -185,7 +208,7 @@ task :seeds => [:environment] do
   # =========
   problem = Problem.find_or_create_by!(title: "Welcome Message Generator") do |prob|
     prob.description = "Create a program that asks the user for their name and outputs a personalized welcome message. If the input is empty, prompt the user again until they provide a valid name."
-    prob.complexity = 0
+    prob.complexity = 1
   end
   contest.problems << problem
 
@@ -210,7 +233,7 @@ task :seeds => [:environment] do
   # =========
   problem = Problem.find_or_create_by!(title: "Sort Implementation") do |prob|
     prob.description = "Implement the Sort algorithm to sort an array of numbers in ascending order."
-    prob.complexity = 0
+    prob.complexity = 1
   end
   contest.problems << problem
 
@@ -235,7 +258,7 @@ task :seeds => [:environment] do
   # =========
   problem = Problem.find_or_create_by!(title: "Stack and Bracket Validator") do |prob|
     prob.description = "Implement a stack structure and use it to validate if a string of brackets is balanced."
-    prob.complexity = 2
+    prob.complexity = 3
   end
 
   # Link Problem to Tag
@@ -283,7 +306,7 @@ task :seeds => [:environment] do
   # =========
   problem = Problem.find_or_create_by!(title: "Character Frequency Counter") do |prob|
     prob.description = "Write a program to count the frequency of each character in a string, considering case sensitivity."
-    prob.complexity = 1
+    prob.complexity = 2
   end
 
   # Link Problem to Tag

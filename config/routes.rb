@@ -27,6 +27,7 @@ Rails.application.routes.draw do
       resources :contests, only: [:index, :show] do
         member do
           get :problems
+          get :results
         end
       end
       resources :organizations do

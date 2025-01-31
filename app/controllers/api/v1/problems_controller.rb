@@ -2,7 +2,7 @@ class Api::V1::ProblemsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_problem, only: [:show, :update, :destroy, :attempts]
 
-  ALLOWED_SORT_FIELDS = %w[title complexity status created_at].freeze
+  ALLOWED_SORT_FIELDS = %w[id title complexity status created_at].freeze
   ALLOWED_SORT_ORDERS = %w[asc desc].freeze
 
   def index
