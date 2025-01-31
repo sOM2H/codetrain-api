@@ -3,7 +3,7 @@ task :seeds => [:environment] do
   organization = Organization.find_or_create_by!(name: 'Test organization')
   contest = Contest.find_or_create_by!(title: "Winter Coding Contest") do |c|
     c.organization_id = organization.id
-    c.description = 'Winter Coding Contest'
+    c.description = 'Winter Coding Contest is an exciting competition for programmers where participants can showcase their skills in solving challenging coding problems. The tasks cover a wide range of topics, from algorithms and data structures to practical software development challenges. Participants compete for prizes and recognition among peers and industry professionals. The contest takes place during the winter season, creating a thrilling and competitive atmosphere for coders of all levels.'
   end
  
   admin = User.find_or_create_by!(login: 'admin') do |user|
@@ -22,35 +22,35 @@ task :seeds => [:environment] do
 
   student = User.find_or_create_by!(login: 'student') do |user|
     user.organization_id = organization.id
-    user.full_name = 'Stutend Abu'
+    user.full_name = 'Student Abu'
     user.password = '123123123'
   end
   student.add_role :student
 
   student2 = User.find_or_create_by!(login: 'student2') do |user|
     user.organization_id = organization.id
-    user.full_name = 'Stutend Dabi'
+    user.full_name = 'Student Dabi'
     user.password = '123123123'
   end
   student2.add_role :student
  
   student3 = User.find_or_create_by!(login: 'student3') do |user|
     user.organization_id = organization.id
-    user.full_name = 'Stutend lala'
+    user.full_name = 'Student lala'
     user.password = '123123123'
   end
   student3.add_role :student
 
   student4 = User.find_or_create_by!(login: 'student4') do |user|
     user.organization_id = organization.id
-    user.full_name = 'Stutend bobo'
+    user.full_name = 'Student bobo'
     user.password = '123123123'
   end
   student4.add_role :student
 
   student5 = User.find_or_create_by!(login: 'student5') do |user|
     user.organization_id = organization.id
-    user.full_name = 'Stutend dudu'
+    user.full_name = 'Student dudu'
     user.password = '123123123'
   end
   student5.add_role :student
@@ -260,6 +260,7 @@ task :seeds => [:environment] do
     prob.description = "Implement a stack structure and use it to validate if a string of brackets is balanced."
     prob.complexity = 3
   end
+  contest.problems << problem
 
   # Link Problem to Tag
   tag = Tag.find_by(name: 'Data Structures')
@@ -284,6 +285,7 @@ task :seeds => [:environment] do
     prob.description = "Write a program to calculate the Least Common Multiple (LCM) of two integers."
     prob.complexity = 1
   end
+  contest.problems << problem
 
   # Link Problem to Tag
   tag = Tag.find_by(name: 'Mathematics')
@@ -308,6 +310,7 @@ task :seeds => [:environment] do
     prob.description = "Write a program to count the frequency of each character in a string, considering case sensitivity."
     prob.complexity = 2
   end
+  contest.problems << problem
 
   # Link Problem to Tag
   tag = Tag.find_by(name: 'String Processing')
