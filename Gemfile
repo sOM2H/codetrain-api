@@ -28,7 +28,6 @@ gem "puma", ">= 5.0"
 gem 'dotenv-rails', groups: [:development, :test]
 gem 'rack-cors'
 gem 'devise'
-gem 'devise-jwt'
 
 gem 'active_model_serializers'
 

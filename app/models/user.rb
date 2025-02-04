@@ -3,8 +3,7 @@ class User < ActiveRecord::Base
 
   rolify
   devise :database_authenticatable, :registerable, :recoverable,
-         :rememberable, :jwt_authenticatable,
-         jwt_revocation_strategy: Devise::JWT::RevocationStrategies::Null
+  :rememberable, :validatable
 
   has_many :attempts, dependent: :destroy
   has_many :contests_users, dependent: :destroy
@@ -15,10 +14,6 @@ class User < ActiveRecord::Base
   validates :full_name, presence: true
 
   before_validation :set_uid
-
-  def jwt_payload
-    { user: UserSerializer.new(self).as_json }
-  end
 
   private
 

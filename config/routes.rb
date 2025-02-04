@@ -4,7 +4,9 @@ Rails.application.routes.draw do
     registrations: 'users/registrations'
   }
 
-  post 'users/refresh_token', to: 'users/refresh_tokens#create'
+  devise_scope :user do
+    get 'users/me', to: 'users/sessions#me'
+  end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
