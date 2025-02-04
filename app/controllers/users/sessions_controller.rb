@@ -1,4 +1,5 @@
 class Users::SessionsController < Devise::SessionsController
+  include ActionController::Cookies
   before_action :authenticate_user!, only: [:me]
 
   respond_to :json
@@ -21,10 +22,18 @@ class Users::SessionsController < Devise::SessionsController
 
   def respond_with(resource, _opts = {})  
     access_token = request.env['warden-jwt_auth.token']
-    refresh_token = SecureRandom.hex(32)
-    resource.update!(refresh_token:)
+    new_refresh_token = SecureRandom.hex(32)
+    resource.update!(refresh_token: new_refresh_token, refresh_token_expires_at: Time.now + 1.day)
 
-    render json: { access_token:, refresh_token: }, status: :ok
+    cookies.signed[:refresh_token] = {
+      value: new_refresh_token,
+      expires: 1.day.from_now,
+      httponly: true,
+      secure: Rails.env.production?,
+      same_site: :strict
+    }
+
+    render json: { access_token: access_token }, status: :ok
   end
 
   def respond_to_on_destroy

@@ -48,7 +48,7 @@ Devise.setup do |config|
   # or not authentication should be aborted when the value is not present.
   config.authentication_keys = [:login]
 
-  config.navigational_formats = [:html]
+  config.navigational_formats = [:json]
 
   config.jwt do |jwt|
     jwt.secret = Rails.application.credentials.secret_key_base

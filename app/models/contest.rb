@@ -10,6 +10,8 @@ class Contest < ApplicationRecord
   validates :title, presence: true
   validates :description, presence: true
 
+  validates :end_time, comparison: { greater_than: :start_time }, if: -> { start_time.present? && end_time.present? }
+
   def unlimited?
     start_time.nil? && end_time.nil?
   end

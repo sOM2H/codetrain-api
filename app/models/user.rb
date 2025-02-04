@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :recoverable,
          :rememberable, :jwt_authenticatable,
          jwt_revocation_strategy: Devise::JWT::RevocationStrategies::Null
-  
+
   has_many :attempts, dependent: :destroy
   has_many :contests_users, dependent: :destroy
   has_many :contests, through: :contests_users
