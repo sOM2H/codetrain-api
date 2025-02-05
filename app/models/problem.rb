@@ -9,6 +9,7 @@ class Problem < ApplicationRecord
   validates :description, presence: true
 
   def max_score(user, contest_id = nil)
+    return nil unless user
     max_score = attempts.where(user_id: user.id, contest_id:).maximum(:score)
     return nil if max_score.nil?
   

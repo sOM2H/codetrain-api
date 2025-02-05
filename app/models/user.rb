@@ -15,6 +15,12 @@ class User < ActiveRecord::Base
 
   before_validation :set_uid
 
+  def role
+    return "student" unless roles
+
+    roles[0].name
+  end
+
   private
 
   def set_uid

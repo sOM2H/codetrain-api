@@ -70,7 +70,7 @@ class Api::V1::ProblemsController < ApplicationController
   end
 
   def problem_params
-    params.require(:problem).permit(:title, :description, tag_ids: [])
+    params.require(:problem).permit(:title, :complexity, :description, tag_ids: [])
   end
 
   def pagination_dict(collection)

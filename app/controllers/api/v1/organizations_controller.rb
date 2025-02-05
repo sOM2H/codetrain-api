@@ -4,7 +4,7 @@ class Api::V1::OrganizationsController < ApplicationController
                                           :teachers, :students, :contests ]
 
   def index
-    render json: Organization.all
+    render json: Organization.all.order(id: 'asc')
   end
 
   def show
