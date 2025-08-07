@@ -2,6 +2,10 @@
 
 A powerful competitive programming platform API built with Ruby on Rails that provides secure code execution, real-time testing, and contest management features.
 
+<div align="center">
+  <img src="./demo.gif" alt="CodeTrain API Demo" width="600"/>
+</div>
+
 ## 📋 Table of Contents
 
 - [🌟 Features](#-features)
