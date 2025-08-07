@@ -17,7 +17,7 @@ A powerful competitive programming platform API built with Ruby on Rails that pr
 - [🔗 API Endpoints](#-api-endpoints)
 - [🏃‍♂️ Code Execution Flow](#️-code-execution-flow)
 - [🐳 Docker Setup](#-docker-setup)
-- [🧪 Testing](#-testing)
+
 - [📊 Database Schema](#-database-schema)
 - [🤝 Contributing](#-contributing)
 
@@ -422,46 +422,226 @@ const subscription = cable.subscriptions.create(
 - **runtime_error**: Code crashed during execution
 - **compilation_error**: Code failed to compile/parse
 
+## 🧪 How Problem Testing Works
+
+### Test Case Structure
+Each problem contains multiple test cases that validate user solutions. Each test case consists of:
+
+```sql
+-- Test model structure
+tests:
+  - input: "Input data that will be provided to the user's program"
+  - output: "Expected output that the program should produce"
+  - problem_id: "Associated problem identifier"
+```
+
+### Testing Process Flow
+
+#### 1. Test Setup (`TestSeter`)
+```ruby
+# Sets up input data for the container
+TestSeter.call(container, test)
+# Creates input.txt file with test.input content
+```
+
+#### 2. Code Execution (`TestRunner`)
+```bash
+# Executes user code with resource monitoring
+timeout 1s /usr/bin/time -f '%e %M' -o resource_usage.txt python3 main.py > output.txt < input.txt
+```
+
+**Resource Limits:**
+- **Time Limit**: Default 1 second per test case
+- **Memory Limit**: 16MB base + language-specific overhead
+  - Python: +9MB (total 25MB)
+  - JavaScript: +8MB (total 24MB)
+  - Java: +50MB (total 66MB)
+  - C++: +2MB (total 18MB)
+
+**Monitoring:**
+- Execution time tracked with `/usr/bin/time`
+- Memory usage monitored in real-time
+- Output captured to `output.txt`
+- Errors logged for debugging
+
+#### 3. Output Validation (`TestChecker`)
+```ruby
+# Compares expected vs actual output
+def self.call(container, test)
+  answer = test.output          # Expected output
+  output = container.read_file('/output.txt')  # User's output
+  
+  # Normalize line endings
+  answer.chop! while answer[-1] == "\n"
+  output.chop! while output[-1] == "\n"
+  
+  answer == output  # Exact string match
+end
+```
+
+### Test Validation Rules
+
+#### ✅ **Exact Match Required**
+- Output must match expected result **exactly**
+- Trailing newlines are automatically stripped
+- No tolerance for extra spaces or formatting differences
+- Case-sensitive comparison
+
+#### ⏱️ **Time Limit Handling**
+```ruby
+# If execution exceeds time limit
+if result == 124  # timeout exit code
+  raise Compiler::TimeLimitError
+end
+```
+
+#### 💾 **Memory Limit Handling**
+```ruby
+# Memory usage monitoring
+memory_used_mb = memory_used_kb / 1024
+if memory_used_mb > memory_limit
+  raise Compiler::MemoryLimitError
+end
+```
+
+### Scoring System
+
+#### **Partial Scoring**
+- Score calculated based on passed test cases: `(passed_tests / total_tests) * 100`
+- If test case 3 fails out of 5 total: `(2/5) * 100 = 40%`
+- Final score rounded to 2 decimal places
+
+#### **Execution Sequence**
+```ruby
+tests.each_with_index do |test, index|
+  # Update progress
+  score = (index.to_f / total_tests * 100).round(2)
+  attempt.update(score: score, log: (index + 1).to_s)
+  
+  # Run test
+  TestSeter.call(container, test)     # Setup input
+  TestRunner.call(container, command)  # Execute code
+  TestChecker.call(container, test)   # Validate output
+  
+  # Broadcast progress via WebSocket
+  attempt.broadcast_attempt
+end
+```
+
+### Example Test Case
+
+**Problem**: "Add Two Numbers"
+```ruby
+# Test Case 1
+input: "5 3"
+output: "8"
+
+# Test Case 2  
+input: "10 -2"
+output: "8"
+
+# Test Case 3
+input: "0 0" 
+output: "0"
+```
+
+**User Solution (Python)**:
+```python
+a, b = map(int, input().split())
+print(a + b)
+```
+
+**Execution Flow**:
+1. `input.txt` ← "5 3"
+2. Execute: `python3 main.py < input.txt > output.txt`
+3. `output.txt` → "8"
+4. Compare: "8" == "8" ✅ **PASS**
+
+### Error Handling
+
+#### **Compilation Errors**
+```ruby
+# Language-specific compilation
+unless source_setup(container, code)
+  raise Compiler::CompilationError
+end
+```
+
+#### **Runtime Errors** 
+```ruby
+# Non-zero exit code from execution
+unless TestRunner.call(container, command)
+  raise Compiler::RunTimeError, current_test_index
+end
+```
+
+#### **Wrong Answer**
+```ruby
+# Output doesn't match expected result
+unless TestChecker.call(container, test)
+  raise Compiler::WrongAnswer, current_test_index
+end
+```
+
+### Real-time Updates
+
+Users receive live progress updates via WebSocket:
+```javascript
+{
+  id: attempt_id,
+  log: "3",           // Current test number
+  result: "running",  // Current status
+  score: 60.0        // Current score percentage
+}
+```
+
+This comprehensive testing system ensures fair evaluation of all submitted solutions while providing detailed feedback and resource monitoring.
+
 ## 🐳 Docker Setup
 
-### Compiler Images
-The system uses separate Docker images for each programming language:
+### Compiler Image
+The system uses a single unified Docker image that contains all programming language environments:
 
-```bash
-# Python environment
-docker/compilers/Dockerfile.python
-
-# JavaScript environment  
-docker/compilers/Dockerfile.node
-
-# C++ environment
-docker/compilers/Dockerfile.cpp
-
-# Go environment
-docker/compilers/Dockerfile.go
-
-# Java environment
-docker/compilers/Dockerfile.java
-
-# Ruby environment
-docker/compilers/Dockerfile.ruby
-
-# PHP environment
-docker/compilers/Dockerfile.php
+```dockerfile
+# docker/compilers/Dockerfile
+FROM ubuntu:18.04
+ENV TZ=Europe/Kiev
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN apt update \
+  && apt install \
+  golang \
+  php \
+  python3 \
+  nodejs \
+  default-jdk \
+  ruby \
+  g++ \
+  time \
+  bash -y
+CMD ["bash"]
 ```
 
-### Building Images
-```bash
-# Build all compiler images
-cd docker/compilers
-docker-compose build
+This unified approach includes:
+- **Python 3**: For Python code execution
+- **Node.js**: For JavaScript code execution  
+- **G++**: For C++ compilation and execution
+- **Go**: For Go language support
+- **Default-JDK**: For Java compilation and execution
+- **Ruby**: For Ruby code execution
+- **PHP**: For PHP code execution
+- **Time & Bash**: For execution monitoring and shell access
 
-# Or use the rake task
+### Building the Image
+```bash
+# Build the compiler image using rake task
 rake create_images
 
-# Build specific language
-docker build -f Dockerfile.python -t python_compiler .
+# Or build manually
+cd docker/compilers
+docker build -t compiler_system .
 ```
+
+The rake task creates a Docker image tagged as `compiler_system:latest` which is used by the application for all code execution.
 
 ### Container Security
 - **Memory Limits**: 128MB + language-specific overhead
@@ -469,43 +649,6 @@ docker build -f Dockerfile.python -t python_compiler .
 - **Temporary Filesystem**: All files deleted after execution
 - **Time Limits**: Configurable execution timeouts
 - **No Persistent Storage**: Containers destroyed after use
-
-## 🧪 Testing
-
-### Running Tests
-```bash
-# Run all tests
-rails test
-
-# Run specific test files
-rails test test/models/attempt_test.rb
-rails test test/controllers/api/v1/attempts_controller_test.rb
-
-# Run with coverage
-COVERAGE=true rails test
-```
-
-### Test Categories
-- **Model Tests**: Validations, associations, business logic
-- **Controller Tests**: API endpoints, authentication, authorization
-- **Integration Tests**: Full request/response cycles
-- **Channel Tests**: WebSocket functionality
-
-### Example Test
-```ruby
-# test/models/attempt_test.rb
-class AttemptTest < ActiveSupport::TestCase
-  test "should create attempt with valid attributes" do
-    attempt = Attempt.new(
-      code: "print('Hello World')",
-      user: users(:student),
-      problem: problems(:two_sum),
-      language: languages(:python)
-    )
-    assert attempt.valid?
-  end
-end
-```
 
 ## 📊 Database Schema
 
